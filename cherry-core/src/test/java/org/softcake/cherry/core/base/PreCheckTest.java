@@ -292,7 +292,7 @@ public class PreCheckTest {
         PreCheck.expression(false, message, PARAMETER, 1);
 
     }
-    
+
     @Test
     public void isParamNullOrEmpty_nullAsParameter_assert() {
 
