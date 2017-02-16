@@ -1,0 +1,19 @@
+== Introduction
+
+[source,java,indent=0]
+----
+include::{testDir}/example/DocExampleTest.java[]
+----
+
+=== Benefits of Project
+NOTE: Neither test classes nor test methods need to be `public`.
+
+==== chapter
+
+chapter chapter chapter
+
+==== chapter
+
+chapter chapter chapter
+
+include::getting-started.adoc[]

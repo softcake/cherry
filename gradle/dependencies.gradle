@@ -1,0 +1,112 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Defines dependencies and versions shared across modules.
+ *
+ * Multiple dependencies can be shared under the same name:
+ *   spring: [
+ *     "org.springframework:spring-core:${versions.spring}",
+ *     "org.springframework:spring-jdbc:${versions.spring}"
+ *   ]
+ *
+ * Use DependencyHandler.create for advanced dependency configuration:
+ *   dependencies.create("org.springframework:spring-core:3.1") {*     // Force a version in case of the conflict
+ *     force = true
+ *
+ *     // Disable all transitive dependencies
+ *     transitive = false
+ *
+ *     // exclude a transitive dependency
+ *     exclude module: "org.unwanted:unwantedModule" // by group & name
+ *     exclude module: "unwantedModule"              // by artifact name
+ *     exclude group:  "org.unwanted'                // by artifact group
+ *}*
+ * @see http://gradle.org/docs/current/javadoc/org/gradle/api/artifacts/dsl/DependencyHandler.html
+ */
+ext {
+    gradle_version = '3.3'
+    tool_versions =[
+            checkstyle: '7.4',
+            pmd: '5.5.1',
+            jmh:  '1.17.3',
+
+    ]
+
+    versions = [
+            guava: '21.0',
+            error_prone_annotations: '2.0.15',
+            jsr305: '3.0.1',
+    ]
+    test_versions = [
+            hamcrest: '2.0.0.0',
+            junit   : '4.12',
+            mockito : '2.5.5',
+    ]
+
+    plugin_versions = [
+            bintray_plugin      : '1.7.3',
+            build_info_extractor: '4.4.12',
+            jmh                 : '0.3.1',
+            shadow              : '1.2.4',
+            versions            : '0.13.0',
+            sonarqube           : '2.2.1',
+            github_info         : '1.1.0',
+            pom_plugin          :  '1.1.0',
+            git                 : '1.6.0',
+            versioning          : '2.6.0',
+            semantic_release    : '1.2.0',
+            degraph             : '0.1.4',
+            buildscan           : '1.4',
+            nebula_publishing   : '4.9.1',
+            asciidoctor         : '1.5.3',
+            asciidoctorj_pdf    : '1.5.0-alpha.11',
+    ]
+
+    libraries = [
+            guava: "com.google.guava:guava:${versions.guava}",
+            error_prone_annotations: "com.google.errorprone:error_prone_annotations:${versions.error_prone_annotations}",
+            jsr305: "com.google.code.findbugs:jsr305:${versions.jsr305}",
+    ]
+
+    test_libraries = [
+            hamcrest: "org.hamcrest:java-hamcrest:${test_versions.hamcrest}",
+            junit   : "junit:junit:${test_versions.junit}",
+            mockito : dependencies.create("org.mockito:mockito-core:${test_versions.mockito}") {
+                exclude group: 'org.hamcrest'
+            },
+    ]
+
+
+    gradle_plugins = [
+            bintray_plugin      : "com.jfrog.bintray.gradle:gradle-bintray-plugin:${plugin_versions.bintray_plugin}",
+            build_info_extractor: "org.jfrog.buildinfo:build-info-extractor-gradle:${plugin_versions.build_info_extractor}",
+            jmh                 : "me.champeau.gradle:jmh-gradle-plugin:${plugin_versions.jmh}",
+            shadow              : "com.github.jengelman.gradle.plugins:shadow:${plugin_versions.shadow}",
+            versions            : "com.github.ben-manes:gradle-versions-plugin:${plugin_versions.versions}",
+            sonarqube           : "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${plugin_versions.sonarqube}",
+            github_info         : "ru.vyarus:gradle-github-info-plugin:${plugin_versions.github_info}",
+            pom_plugin          :  "ru.vyarus:gradle-pom-plugin:${plugin_versions.pom_plugin}",
+            git                 : "org.ajoberstar:gradle-git:${plugin_versions.git}",
+            versioning          : "net.nemerosa:versioning:${plugin_versions.versioning}",
+            semantic_release    : "gradle.plugin.de.gliderpilot.gradle.semantic-release:gradle-semantic-release-plugin:${plugin_versions.semantic_release}",
+            degraph             : "de.schauderhaft.degraph:degraph-check:${plugin_versions.degraph}",
+            buildscan           : "com.gradle:build-scan-plugin:${plugin_versions.buildscan}",
+            nebula_publishing   : "com.netflix.nebula:nebula-publishing-plugin:${plugin_versions.nebula_publishing}",
+            asciidoctor         : "org.asciidoctor:asciidoctor-gradle-plugin:${plugin_versions.asciidoctor}",
+            asciidoctorj_pdf    : "org.asciidoctor:asciidoctorj-pdf:${plugin_versions.asciidoctorj_pdf}",
+    ]
+}

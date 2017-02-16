@@ -1,0 +1,106 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+tasks.remove(uploadArchives)
+uploadArchives.enabled = false
+
+task aggregateJavadocs(type: Javadoc) {
+    onlyIf {
+        !(project.isSnapshot && project.isCi)
+    }
+
+    title = "Softcake ${project.name} ${version} "
+    description = 'Aggregates Javadoc API documentation of all subprojects.'
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.author = true
+    options.header = rootProject.description
+    options.splitIndex = true
+    options.addStringOption('Xdoclint:html,syntax,reference', '-quiet')
+    options.jFlags '-Xmx1g'
+    options.links('http://docs.oracle.com/javase/8/docs/api/',
+            'http://typesafehub.github.com/config/latest/api/',
+            'http://google.github.io/guava/releases/21.0/api/docs/')
+
+    dependsOn publishedModules.javadoc
+    source publishedModules.javadoc.source
+    maxMemory = "1024m"
+    destinationDir rootProject.file("$rootProject.buildDir/docs/javadoc")
+    classpath = rootProject.files(publishedModules.javadoc.classpath)
+
+}
+
+task aggregateJavadocJar(type: Jar) {
+    classifier = 'javadoc'
+    dependsOn aggregateJavadocs
+    from aggregateJavadocs.destinationDir
+    classifier 'javadoc'
+    extension 'jar'
+
+}
+
+task aggregateSourcesJar(type: Jar) {
+    classifier = 'sources'
+    def modules = publishedModules.findAll { subproject -> file("$subproject.projectDir").exists() }
+    dependsOn modules.sourceJar
+    from { modules.sourceSets.main.allSource }
+    extension 'jar'
+}
+
+task aggregateJar(type: Jar) {
+    manifest {
+        attributes(
+                'Created-By': "${System.properties['java.version']} (" +
+                        "${System.properties['java.vendor']} " +
+                        "${System.properties['java.vm.version']})".toString(),
+                'Built-By': project.builtByValue,
+                'Build-Date': project.buildDate,
+                'Build-Time': project.buildTime,
+                'Build-Revision': project.buildRevision,
+                'Built-Gradle': gradle.gradleVersion,
+                'Specification-Title': project.name,
+                'Specification-Version': project.normalizeVersion(project.version),
+                'Specification-Vendor': project.domain,
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': project.domain)
+
+    }
+    extension 'jar'
+    dependsOn publishedModules.jar
+
+    from publishedModules.sourceSets.main.output.classesDir
+    from publishedModules.sourceSets.main.output.resourcesDir
+
+}
+
+tasks.withType(Jar) { task ->
+    group 'Jars'
+    from(rootProject.projectDir) {
+        include 'LICENSE.md'
+        into 'META-INF'
+    }
+    task.onlyIf {
+        !(project.isSnapshot && project.isCi)
+    }
+}
+
+task createAllJars {
+    group 'Jars'
+    dependsOn aggregateJar, aggregateJavadocJar, aggregateSourcesJar
+}
+

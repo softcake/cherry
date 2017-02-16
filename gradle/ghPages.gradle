@@ -1,0 +1,39 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: "org.ajoberstar.github-pages"
+
+githubPages {
+    repoUri = github.site
+    credentials {
+        username = project.ghUser
+        password = project.ghPass
+    }
+    def docDir = project(':documentation').buildDir
+    pages {
+        from "$docDir/asciidoc/html5"
+    }
+
+}
+
+task cleanGhPages(type: Delete) {
+    delete "$buildDir/ghpages"
+    followSymlinks = true
+    mustRunAfter "publishGhPages"
+}
+
+prepareGhPages.dependsOn ":documentation:asciidoctor"
+

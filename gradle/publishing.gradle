@@ -1,0 +1,101 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+afterEvaluate {
+    assert description: "Project $project.path is published, must have a description"
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'ru.vyarus.pom'
+apply plugin: 'nebula.javadoc-jar'
+apply plugin: 'nebula.source-jar'
+apply plugin: 'nebula.maven-publish'
+
+tasks.remove(uploadArchives)
+uploadArchives.enabled = false
+
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.author = true
+    afterEvaluate {
+        options.header = "${project.description} of ${rootProject.description}."
+    }
+    options.addStringOption('Xdoclint:html,syntax,reference', '-quiet')
+    options.links('http://docs.oracle.com/javase/8/docs/api/',
+            'http://typesafehub.github.com/config/latest/api/',
+            'http://google.github.io/guava/releases/21.0/api/docs/')
+}
+
+tasks.withType(Jar) {
+    group 'Jars'
+    from(rootProject.projectDir) {
+        include 'LICENSE.md'
+        into 'META-INF'
+    }
+}
+
+compileJava.doLast {
+    rootProject.generateManifest = true
+}
+
+jar {
+    onlyIf {
+        rootProject.generateManifest
+    }
+    manifest {
+        attributes(
+                'Created-By': "${System.properties['java.version']} (" +
+                              "${System.properties['java.vendor']} " +
+                              "${System.properties['java.vm.version']})".toString(),
+                'Built-By': builtByValue,
+                'Build-Date': project.buildDate,
+                'Build-Time': project.buildTime,
+                'Build-Revision': project.buildRevision,
+                'Built-Gradle': gradle.gradleVersion,
+                'Specification-Title': project.name,
+                'Specification-Version': project.normalizeVersion(project.version),
+                'Specification-Vendor': project.domain,
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': project.domain)
+
+    }
+}
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
+pom {
+    name "${project.group}:${project.name}"
+    description "Module \"${project.name}\" of softcake ${rootProject.name}."
+    inceptionYear project.buildYear
+    packaging 'jar'
+    developers {
+        developer {
+            id 'softcake'
+            name 'Rene Neubert'
+            email 'rene.neubert@softcake.org'
+            roles {
+                role 'owner'
+            }
+        }
+    }
+}
+
+
+

@@ -1,0 +1,9 @@
+apply plugin: 'java'
+description = "Core Module"
+
+dependencies {
+    compile libraries.guava
+    testCompile test_libraries.junit
+
+    //compile project(':cherry-___')
+}

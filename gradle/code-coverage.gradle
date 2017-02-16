@@ -1,0 +1,76 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    group = "Coverage reports"
+    description = 'Generate Jacoco coverage reports after running tests.'
+    additionalSourceDirs = project.files(sourceSets.main.allSource.srcDirs)
+    sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+    classDirectories = project.files(sourceSets.main.allSource.srcDirs)
+    reports {
+        xml.enabled = !(project in integTestModules)
+        csv.enabled = false
+        html.enabled = !(project in integTestModules) && !project.isCi
+    }
+}
+
+
+
+
+if (project in integTestModules) {
+
+    task jacocoMerge(type: JacocoMerge) {
+        executionData test, integTest
+        onlyIf {
+            file("$buildDir/jacoco/test.exec").exists() && file(
+                    "$buildDir/jacoco/integTest.exec").exists()
+        }
+    }
+
+    task jacocoMergedReport(type: JacocoReport) {
+        group = "Coverage reports"
+        executionData jacocoMerge.destinationFile
+        dependsOn jacocoTestReport, jacocoMerge
+        mustRunAfter jacocoTestReport
+        reports {
+            xml.enabled = true
+            csv.enabled = false
+            html.enabled = !project.isCi
+            html.destination = file("${reporting.baseDir}/jacoco/test/html")
+            xml.destination = file("${reporting.baseDir}/jacoco/test/jacocoTestReport.xml")
+        }
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories = files(sourceSets.main.output)
+    }
+
+    check.finalizedBy jacocoMergedReport
+
+} else {
+
+    check.finalizedBy jacocoTestReport
+}
+
+
+tasks.withType(Test) { task ->
+    group = "verification"
+    jacoco {
+        enabled = true
+    }
+}
+
+

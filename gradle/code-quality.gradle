@@ -1,0 +1,75 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+
+def configDir = new File("${rootDir}", 'config')
+def qualityGroup = "Code Quality"
+
+apply plugin: 'checkstyle'
+def checkstyleConfigDir = "$configDir/checkstyle"
+
+checkstyle {
+    ignoreFailures = project.ignoreFailures
+    configFile = new File(checkstyleConfigDir, "softcake_checks.xml")
+    configProperties.basedir = checkstyleConfigDir
+    toolVersion = tool_versions.checkstyle
+}
+
+tasks.withType(Checkstyle) {
+    enabled = checkCodeQuality
+    group = qualityGroup
+    reports {
+        xml.enabled = !project.isCi
+        html.enabled = !project.isCi
+    }
+}
+
+apply plugin: 'findbugs'
+
+findbugs {
+    effort = 'max'
+    ignoreFailures = project.ignoreFailures
+    excludeFilter = new File(configDir, "findbugs/exclude.xml")
+}
+
+tasks.withType(FindBugs) {
+    enabled = checkCodeQuality
+    group = qualityGroup
+    reports {
+        xml.enabled = false
+        html.enabled = !project.isCi
+    }
+}
+
+apply plugin: 'pmd'
+
+pmd {
+    ignoreFailures = project.ignoreFailures
+    ruleSets = []
+    toolVersion = tool_versions.pmd
+    ruleSetConfig = resources.text.fromFile(new File(configDir, "pmd/rulesSets.xml"))
+    sourceSets = [sourceSets.main]
+}
+
+tasks.withType(Pmd) {
+    enabled = project.checkCodeQuality
+    group = qualityGroup
+    reports {
+        xml.enabled = !project.isCi
+        html.enabled = !project.isCi
+    }
+}

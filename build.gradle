@@ -1,0 +1,124 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    apply from: "${rootDir}/gradle/dependencies.gradle"
+    dependencies {
+        classpath gradle_plugins.values()
+    }
+}
+
+description = "The Cherry Project."
+
+apply plugin: "base"
+apply plugin: "de.gliderpilot.semantic-release"
+apply plugin: "com.github.ben-manes.versions"
+apply plugin: "net.nemerosa.versioning"
+apply plugin: "org.sonarqube"
+apply plugin: "com.jfrog.artifactory"
+
+artifactoryPublish.skip true
+
+ext {
+
+    publishedModules = getPublishedProjects()
+
+    integTestModules = publishedModules.findAll {
+        (it.name in [])
+    }
+
+    benchmarkModules = publishedModules.findAll {
+        (it.name in [])
+    }
+
+    sonarQubeModules = publishedModules
+    generateManifest = false
+    publishArtifacts = true
+    checkCodeQuality = true
+    ignoreFailures = false
+    mavenSync = false //requires jcenter request
+    }
+
+allprojects {
+
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+    }
+
+    apply plugin: "ru.vyarus.github-info"
+    github {
+        user "softcake"
+        license "Apache"
+        repository rootProject.name
+    }
+
+    group = "${reverseDomain}.${github.repository}"
+
+}
+
+apply from: file('gradle/credentials.gradle')
+apply from: file('gradle/properties.gradle')
+apply from: file('gradle/idea/idea.gradle')
+apply from: file('gradle/convention.gradle')
+apply from: file('gradle/compile.gradle')
+apply from: file('gradle/release.gradle')
+apply from: file('gradle/sonarqube.gradle')
+apply from: file('gradle/ghPages.gradle')
+
+subprojects { project ->
+
+    if (project.plugins.hasPlugin(JavaPlugin) && file(project.projectDir).exists()) {
+        dependencies {
+            provided libraries.jsr305
+            provided libraries.error_prone_annotations
+            testCompile test_libraries.junit
+        }
+    }
+}
+
+private List<Project> getPublishedProjects() {
+    List<Project> publishedModules = []
+    subprojects.each { project ->
+        if (project.name.indexOf(rootProject.name) != -1) {
+            publishedModules.add(project)
+            println("Find published module '$project.name' in root project '$rootProject.name'")
+        }
+    }
+    return publishedModules
+}
+
+semanticRelease {
+    repo {
+        ghToken = project.ext.ghToken
+        releaseAsset aggregateJar, contentType: 'application/zip'
+        releaseAsset aggregateSourcesJar, label: 'the sources of the project', contentType:
+                'application/zip'
+        releaseAsset aggregateJavadocJar, label: 'the javadoc of the project', contentType:
+                'application/zip'
+    }
+}
+
+

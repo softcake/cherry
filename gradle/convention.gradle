@@ -1,0 +1,74 @@
+/*
+ * Copyright 2017 softcake.org.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+subprojects { project ->
+    status = rootProject.status
+
+    if (project in publishedModules) {
+        apply plugin: 'java'
+        sourceCompatibility = 1.8
+    }
+
+
+    
+    if (file("$projectDir").exists()) {
+
+        if (project in benchmarkModules) {
+            apply from: "$rootDir/gradle/jmh.gradle"
+        }
+
+        if (project in integTestModules) {
+            apply from: "$rootDir/gradle/integTest.gradle"
+
+        }
+
+        if (project in publishedModules) {
+
+            apply from: "$rootDir/gradle/publishing.gradle"
+            apply from: "$rootDir/gradle/bintray.gradle"
+            apply from: "$rootDir/gradle/artifactory.gradle"
+            apply from: "$rootDir/gradle/code-quality.gradle"
+            apply from: "$rootDir/gradle/code-coverage.gradle"
+
+            String branch = versioning.info.branch
+
+            final BRANCH_NAMES_PATTERN = /^(?:release[-\/])?[0-9]+(\.[0-9]+)?\.x$|^(?:feature[-\/]|hotfix[-\/]|develop|master)?$/
+
+            afterEvaluate {
+                if (branch.matches(BRANCH_NAMES_PATTERN)){
+
+                    if (!project.isSnapshot && project.hasTravisSecEnv) {
+
+                        publish.finalizedBy getTasksByName("bintrayUpload", true)
+                        publish.finalizedBy getTasksByName("artifactoryPublish", true)
+                        publish.finalizedBy rootProject.getTasksByName("publishGhPages", true)
+                        publish.finalizedBy rootProject.getTasksByName("sonarqube", true)
+
+                    } else if (!project.isPullRequest && project.hasTravisSecEnv) {
+
+                        publish.finalizedBy getTasksByName("artifactoryPublish", true)
+                        publish.finalizedBy rootProject.getTasksByName("sonarqube", true)
+
+                    } else if (project.isPullRequest && project.hasTravisSecEnv) {
+
+                        build.finalizedBy rootProject.getTasksByName("sonarqube", true)
+                    }
+                }
+            }
+        }
+    }
+}
+
