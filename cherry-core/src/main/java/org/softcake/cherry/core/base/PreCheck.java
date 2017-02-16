@@ -228,7 +228,7 @@ public final class PreCheck {
             throw new IllegalArgumentException("parameter '"
                                                + parameterName
                                                + "'"
-                                               + " must not be null or empty");
+                                               + " must not be null or empty!");
 
         }
 

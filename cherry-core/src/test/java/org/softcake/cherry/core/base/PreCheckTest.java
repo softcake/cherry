@@ -224,7 +224,7 @@ public class PreCheckTest {
     public void parameterNotNullOrEmpty_emptyParameter_throw() {
 
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("parameter '" + PARAMETER_NAME + "'" + " must not be null or empty");
+        thrown.expectMessage("parameter '" + PARAMETER_NAME + "'" + " must not be null or empty!");
         String para = "";
 
         PreCheck.parameterNotNullOrEmpty(para, PARAMETER_NAME);
