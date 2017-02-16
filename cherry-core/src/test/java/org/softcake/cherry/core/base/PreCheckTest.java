@@ -292,15 +292,7 @@ public class PreCheckTest {
         PreCheck.expression(false, message, PARAMETER, 1);
 
     }
-
-    @Test
-    public void constructorMustBePrivateAndThrowException() throws ReflectiveOperationException {
-
-        PrivateConstructorTester.forClass(PreCheck.class).expectedExceptionType(
-                IllegalStateException.class,
-                "No instances!").check();
-    }
-
+    
     @Test
     public void isParamNullOrEmpty_nullAsParameter_assert() {
 
