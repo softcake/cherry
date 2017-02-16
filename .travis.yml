@@ -23,7 +23,7 @@ before_install:
 - git checkout -qf $TRAVIS_BRANCH
 install:
 - echo "skip default gradlew assemble"
-script: travis_wait 30 "buildscripts/buildViaTravis.sh"
+script: "buildscripts/buildViaTravis.sh"
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 env:
