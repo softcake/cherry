@@ -1,12 +1,14 @@
-:src: ../../../gradle-java-template-core/src
+:src: ../../../lemon-core/src
 :testDir: ../../test/java/
+:mainDir: ../../main/java/
 :api: api/com/github/softcake/gradle-java-template/
 :docinfo1:
 ifdef::env-github[]
 :note-caption: :information-source:
 endif::[]
 
-= {projectName} User Guide & Examples
+
+= {projectName}  - User Guide & Examples
 Rene Neubert - @softcake.org
 :revnumber: {project-version}
 
@@ -16,8 +18,10 @@ include::intro.adoc[]
 
 include::configuring.adoc[]
 
-include::examples.adoc[]
+//include::examples.adoc[]
 
 include::changes.adoc[]
 
 include::about.adoc[]
+
+

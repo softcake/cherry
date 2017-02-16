@@ -1,42 +1,15 @@
 === Getting Started
 
-[source,groovy,subs="+attributes"]
+Include dependencies to build.gradle:
+[source,java,indent=0]
+[subs="attributes"]
+.build.gradle
 ----
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath ''
-    }
-}
-
-apply plugin: ''
 apply plugin: 'java'
+
+dependencies {
+
+    testCompile "org.softcake.cherry:cherry-core:{revnumber}"
+
+}
 ----
-
-
-.table
-|===
-|Header 1 |Header 2 |Header 3
-
-|Column 1, row 1
-|Column 2, row 1
-|Column 3, row 1
-
-|Column 1, row 2
-|Column 2, row 2
-|Column 3, row 2
-
-|Column 1, row 3
-|Column 2, row 3
-|Column 3, row 3
-|===
-
-=== chapter chapter chapter
-
-chapter chapter chapter
-
-=== chapter chapter chapter
-
-chapter chapter chapter

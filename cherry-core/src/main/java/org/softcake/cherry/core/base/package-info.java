@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2017 softcake.org.
  *
@@ -14,12 +15,8 @@
  * limitations under the License.
  */
 
-apply plugin: 'java'
-description = "Core Module"
-
-dependencies {
-    compile libraries.guava
-    testCompile test_libraries.junit
-    testCompile 'org.softcake.lemon:lemon-core:1.1.0-develop-SNAPSHOT'
-    //compile project(':cherry-___')
-}
+/**
+ *
+ * @author softcake.org
+ */
+package org.softcake.cherry.core.base;

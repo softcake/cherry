@@ -115,6 +115,7 @@
         <exclude name="AvoidRethrowingException"/>
         <exclude name="AvoidCatchingGenericException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/>
+        <exclude name="SignatureDeclareThrowsException"/>
     </rule>
 
     <rule ref="rulesets/java/strings.xml">

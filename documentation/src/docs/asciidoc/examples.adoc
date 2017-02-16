@@ -1,8 +1,2 @@
 === Examples
 
-
-.Use Tags
-[source,java,indent=0]
-----
-include::{testDir}/example/DocExampleTest.java[tags=example]
-----

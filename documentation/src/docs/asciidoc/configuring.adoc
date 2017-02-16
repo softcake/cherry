@@ -1,11 +1,7 @@
 
 
-== Configuring chapter
+== Tools
 
-chapter
-
-=== Configuring chapter chapter
-
-chapter chapter
 
 include::contents.adoc[]
+

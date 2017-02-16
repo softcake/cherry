@@ -1,7 +1,4 @@
 == Change Log
 
 [discrete]
-=== v2.0.0 (Unreleased)
-
-[discrete]
 === v1.0.0
