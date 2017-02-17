@@ -64,8 +64,10 @@ allprojects {
 
     repositories {
         jcenter()
-        mavenLocal()
         mavenCentral()
+        maven{
+            url "https://dl.bintray.com/softcake/lemon/"
+        }
     }
 
     apply plugin: "ru.vyarus.github-info"

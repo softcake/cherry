@@ -20,6 +20,5 @@ description = "Core Module"
 dependencies {
     compile libraries.guava
     testCompile test_libraries.junit
-    testCompile 'org.softcake.lemon:lemon-core:1.1.0-develop-SNAPSHOT'
-    //compile project(':cherry-___')
+    testCompile 'org.softcake.lemon:lemon-core:1.0.0'
 }
