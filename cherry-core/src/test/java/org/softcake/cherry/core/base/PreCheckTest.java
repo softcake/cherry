@@ -286,7 +286,8 @@ public class PreCheckTest {
     }
 
     @Test
-    public void preCheck_constructorMustBePrivateAndThrow_assert() throws ReflectiveOperationException {
+    public void preCheck_constructorMustBePrivateAndThrow_assert()
+            throws ReflectiveOperationException {
 
         PrivateConstructorTester.forClass(PreCheck.class).expectedExceptionType(
                 IllegalStateException.class,
