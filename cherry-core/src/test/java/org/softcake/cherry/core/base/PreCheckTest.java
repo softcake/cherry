@@ -52,14 +52,6 @@ public class PreCheckTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void preCheck_constructorMustBePrivateAndThrow_assert() {
-
-        PrivateConstructorTester.forClass(PreCheck.class).expectedExceptionType(
-                IllegalStateException.class,
-                "No instances!");
-    }
-
-    @Test
     public void notNull_parameterIsSameInstance_assert() {
 
         String para = PARAMETER;
@@ -291,6 +283,14 @@ public class PreCheckTest {
 
         PreCheck.expression(false, message, PARAMETER, 1);
 
+    }
+
+    @Test
+    public void preCheck_constructorMustBePrivateAndThrow_assert() throws ReflectiveOperationException {
+
+        PrivateConstructorTester.forClass(PreCheck.class).expectedExceptionType(
+                IllegalStateException.class,
+                "No instances!").check();
     }
 
     @Test
