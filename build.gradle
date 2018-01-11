@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 softcake.org.
+ * Copyright 2018 softcake.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ buildscript {
     apply from: "${rootDir}/gradle/dependencies.gradle"
     dependencies {
         classpath gradle_plugins.values()
+        classpath "org.codehaus.gpars:gpars:1.2.1"
     }
 }
 

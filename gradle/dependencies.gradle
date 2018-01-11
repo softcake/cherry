@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 softcake.org.
+ * Copyright 2018 softcake.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
  * @see http://gradle.org/docs/current/javadoc/org/gradle/api/artifacts/dsl/DependencyHandler.html
  */
 ext {
-    gradle_version = '3.3'
+    gradle_version = '4.4.1'
     tool_versions =[
             checkstyle: '7.4',
             pmd: '5.5.1',
@@ -63,7 +63,7 @@ ext {
             jmh                 : '0.3.1',
             shadow              : '1.2.4',
             versions            : '0.13.0',
-            sonarqube           : '2.2.1',
+            sonarqube           : '2.4',
             github_info         : '1.1.0',
             pom_plugin          :  '1.1.0',
             git                 : '1.6.0',

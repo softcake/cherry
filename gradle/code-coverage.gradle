@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 softcake.org.
+ * Copyright 2018 softcake.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 
 apply plugin: 'jacoco'
-
+/*jacoco {
+    toolVersion = "0.7.6.201602180812"
+}*/
 jacocoTestReport {
     group = "Coverage reports"
     description = 'Generate Jacoco coverage reports after running tests.'
@@ -71,6 +73,7 @@ tasks.withType(Test) { task ->
     jacoco {
         enabled = true
     }
+
 }
 
 
